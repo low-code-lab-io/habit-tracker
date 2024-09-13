@@ -3,17 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Habit Tracker</title>
+    <title>Habit Tracker with Pomodoro Timer</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
             margin-top: 50px;
         }
+        h1 {
+            margin-top: 0;
+        }
         .habit-container {
             display: flex;
             justify-content: center;
             gap: 10px;
+            margin-bottom: 20px;
         }
         .habit-field {
             width: 80px;
@@ -32,12 +36,19 @@
             font-size: 16px;
             cursor: pointer;
         }
+        .pomodoro-timer {
+            margin-top: 30px;
+        }
+        #timer {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
     <h1>Simple Habit Tracker</h1>
     <p>Click on an empty field to plant a flower!</p>
-    
+
     <div class="habit-container">
         <div class="habit-field" onclick="plantFlower(this, 0)"></div>
         <div class="habit-field" onclick="plantFlower(this, 1)"></div>
@@ -48,7 +59,16 @@
 
     <button onclick="refreshFields()">Refresh</button>
 
+    <div class="pomodoro-timer">
+        <h1 id="timer">25:00</h1>
+        <button id="start-button">Start</button>
+        <button id="stop-button" disabled>Stop</button>
+        <button id="restart-button" disabled>Restart</button>
+        <p id="status">Work Session</p>
+    </div>
+
     <script>
+        // Flower Habit Tracker Logic
         const flowers = ['🌸', '🌻', '🌼', '🌷', '🌹'];
 
         function plantFlower(element, index) {
@@ -61,6 +81,82 @@
                 field.textContent = '';
             });
         }
+
+        // Pomodoro Timer Logic
+        const timer = document.getElementById('timer');
+        const startButton = document.getElementById('start-button');
+        const stopButton = document.getElementById('stop-button');
+        const restartButton = document.getElementById('restart-button');
+        const status = document.getElementById('status');
+
+        let isRunning = false;
+        let workMinutes = 25; // Work Session Duration
+        let breakMinutes = 5;  // Break Session Duration
+        let minutes = workMinutes;
+        let seconds = 0;
+        let interval;
+
+        function updateTimerDisplay() {
+            const formattedMinutes = minutes.toString().padStart(2, '0');
+            const formattedSeconds = seconds.toString().padStart(2, '0');
+            timer.textContent = `${formattedMinutes}:${formattedSeconds}`;
+        }
+
+        function startTimer() {
+            if (isRunning) return; // Don't start if already running
+
+            isRunning = true;
+            startButton.disabled = true;
+            stopButton.disabled = false;
+            restartButton.disabled = false;
+            interval = setInterval(() => {
+                seconds--;
+                if (seconds < 0) {
+                    seconds = 59;
+                    minutes--;
+                }
+
+                if (minutes === 0 && seconds === 0) {
+                    clearInterval(interval);
+                    isRunning = false;
+                    startButton.disabled = false;
+                    stopButton.disabled = true;
+                    restartButton.disabled = false;
+
+                    // Switch to Break Session
+                    minutes = breakMinutes;
+                    status.textContent = "Break Session";
+                }
+
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        function stopTimer() {
+            if (!isRunning) return; // Don't stop if not running
+
+            clearInterval(interval);
+            isRunning = false;
+            startButton.disabled = false;
+            stopButton.disabled = true;
+            restartButton.disabled = false;
+        }
+
+        function restartTimer() {
+            clearInterval(interval);
+            isRunning = false;
+            minutes = workMinutes;
+            seconds = 0;
+            status.textContent = "Work Session";
+            updateTimerDisplay();
+            startButton.disabled = false;
+            stopButton.disabled = true;
+            restartButton.disabled = true;
+        }
+
+        startButton.addEventListener('click', startTimer);
+        stopButton.addEventListener('click', stopTimer);
+        restartButton.addEventListener('click', restartTimer);
     </script>
 </body>
 </html>
