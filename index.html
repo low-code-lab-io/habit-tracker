@@ -9,6 +9,9 @@
             font-family: Arial, sans-serif;
             text-align: center;
             margin-top: 50px;
+            background-color: white;
+            color: black;
+            transition: background-color 0.3s, color 0.3s;
         }
         h1 {
             margin-top: 0;
@@ -29,12 +32,14 @@
             font-size: 36px;
             cursor: pointer;
             user-select: none;
+            transition: background-color 0.3s, color 0.3s;
         }
         button {
             margin-top: 20px;
             padding: 10px 20px;
             font-size: 16px;
             cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
         }
         .pomodoro-timer {
             margin-top: 30px;
@@ -42,6 +47,27 @@
         #timer {
             font-size: 48px;
             margin-bottom: 10px;
+        }
+
+        /* Dark mode styles */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #333;
+                color: #f1f1f1;
+            }
+            .habit-field {
+                border: 2px solid #555;
+                background-color: #444;
+                color: #f1f1f1;
+            }
+            button {
+                background-color: #555;
+                color: white;
+                border: 1px solid #666;
+            }
+            #timer {
+                color: #f1f1f1;
+            }
         }
     </style>
 </head>
